@@ -1,6 +1,10 @@
 const { ApolloServer } = require("apollo-server");
 const { ApolloGateway } = require("@apollo/gateway");
 
+
+const log = require('./src/server/lib/logger/logger');
+const logger = log.logger.child({ sourceFile: log.file.setFilename(__filename) });
+
 const gateway = new ApolloGateway({
   serviceList: [
     { name: "messages", url: "http://localhost:4002/graphql" },
@@ -18,10 +22,10 @@ const gateway = new ApolloGateway({
         apiKey: process.env.APOLLO_ENGINE_KEY,
       },
       executor
-    
     });
 
   server.listen({ port: 4000 }).then(({ url }) => {
+    logger.info(`🚀 gateway Server ready at ${url}`);
     console.log(`🚀 Server ready at ${url}`);
   });
 })();
