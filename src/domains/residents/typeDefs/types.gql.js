@@ -3,7 +3,6 @@ const { gql } = require('apollo-server');
 const GQLtypes = gql`
 
   type Query {
-      hello: String 
       residents: [Resident] 
       resident(id: ID): Resident 
     }

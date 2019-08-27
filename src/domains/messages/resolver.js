@@ -3,8 +3,8 @@
 
 const resolvers = {
   Query: {
-    messages: (_, { id }, { dataSources }) =>
-      dataSources.messageAPI.getAllMessages(),
+    messages: async (_, { id }, { dataSources }) =>
+        dataSources.messageAPI.getAllMessages()
   }
 }
 

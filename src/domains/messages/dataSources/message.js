@@ -12,7 +12,7 @@ class MessageAPI extends RESTDataSource {
     return {
       id: message._id, 
       messageCode: message.messageCode,
-      content: message.content,
+      messageContent: message.messageContent,
       lang: message.lang,
       channelType: message.channelType
     }
