@@ -1,0 +1,39 @@
+{
+  "name": "graphql-apollo-federated",
+  "version": "1.0.0",
+  "description": "Graphql Apollo boiler-plate",
+  "main": "apollo.config.js",
+  "scripts": {
+    "build": "tsc",
+    "serve": "npm run build && nodemon src/index.js",
+    "start": "node src/index.js",
+    "deploy": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philipsales/graphql-express.git"
+  },
+  "keywords": [
+    "graphql",
+    "apollo"
+  ],
+  "author": "Philip Sales",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/philipsales/graphql-express/issues"
+  },
+  "homepage": "https://github.com/philipsales/graphql-express#readme",
+  "devDependencies": {
+    "tslint": "^5.19.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "apollo-datasource-rest": "^0.6.1",
+    "apollo-server": "^2.8.2",
+    "couchbase": "^2.5.1",
+    "graphql": "^14.5.0",
+    "graphql-tag": "^2.10.1",
+    "graphql-tool": "^1.0.0",
+    "node-fetch": "^2.6.0"
+  }
+}

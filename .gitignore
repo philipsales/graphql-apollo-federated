@@ -1,0 +1,11 @@
+node_modules
+
+#credentials
+src/server/config/config.json
+
+#log files
+logs/combined.log
+logs/error.log
+logs/warning.log
+
+package-lock.json
