@@ -41,7 +41,7 @@ const server = new ApolloServer({
 
 if (process.env.NODE_ENV !== 'test'){
   server.listen({ port: 4002 }).then(({ url }) => {
-    logger.info('🚀 initialize message server');
+    logger.info('🚀 message app server');
     console.log(`🚀 message app running at ${url}`);
   });
 }

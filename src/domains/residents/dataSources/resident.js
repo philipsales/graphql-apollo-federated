@@ -1,35 +1,24 @@
 'use strict';
 
 const axios = require('axios');
-const querystring = require('querystring');
 const couchbase = require('couchbase');
+
+//TODO: FIX ALL THIS CONIFGURATION
 const auth = "Basic " + new Buffer
 	.from("curisAdminUser" + ":" + "adm(1)mwh")
   .toString("base64")
-  
 axios.defaults.headers.common['Authorization'] = auth;
 axios.defaults.headers.post['Content-Type'] = "application/json";
 
+const cluster = new couchbase.Cluster("couchbase://139.162.49.49:8091");
+cluster.authenticate("", "Awhp1idb")
+const bucket = cluster.openBucket("awhpiidb");
+
 class ResidentAPI {
-  constructor() { 
+  constructor() { }
 
-    this.cluster = new couchbase.Cluster("couchbase://139.162.49.49:8091");
-    this.cluster.authenticate("", "Awhp1idb")
-
-    //this.cluster = new couchbase.Cluster("couchbase://localhost:8091");
-    //this.cluster.authenticate("", "")
-    this.bucket = this.cluster.openBucket("awhpiidb");
-
-    //this.cluster = new couchbase.Cluster(process.env.COUCHBASE_URI);
-    //this.cluster.authenticate(process.env.COUCHBASE_N1QL_USERNAME, process.env.COUCHBASE_N1QL_PASSWORD)
-
-  }
-
-  residentReducer(resident) {
-    console.log('inside reducer');
-    console.log('answer',resident.answers.Last_Name)
-    let answers = { 
-
+  residentMapper(resident) {
+    return { 
       adddress: {
         countryCode: resident.answers.countryCode,
         countryName: resident.answers.countryName,
@@ -64,10 +53,7 @@ class ResidentAPI {
         organization: resident.organization,
         dateCreated: resident.dateCreated
       }
-
     }
-
-    return answers;
   }
 
   async getResident(residentID) {
@@ -91,7 +77,7 @@ class ResidentAPI {
     }); 
 
     let result = await promise; 
-    return result.map(resident => this.residentReducer(resident))[0];
+    return result.map(resident => this.residentMapper(resident))[0];
   }
 
 
@@ -103,7 +89,7 @@ class ResidentAPI {
     let query = couchbase.N1qlQuery.fromString(statement);
 
     let promise = new Promise((resolve,reject) => {
-      this.bucket.query(query, (error, response) => {
+      bucket.query(query, (error, response) => {
         if(error){
           console.log(error);
           reject(error)
@@ -117,7 +103,7 @@ class ResidentAPI {
     let results = await promise; 
 
     return Array.isArray(results)
-      ? results.map(resident => this.residentReducer(resident)) : [];
+      ? results.map(resident => this.residentMapper(resident)) : [];
   }
 
   setQuery(args){

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "concurrently \"npm run \" \"command2 arg\"",
-    "all": "concurrently \"node src/domains/messages/index.js \"  \"node src/domains/residents/index.js\" \"node gateway.js\"",
+    "domains": "concurrently \"nodemon src/domains/messages/index.js \"  \"nodemon src/domains/residents/index.js\" ",
+    "gateway": "nodemon gateway.js",
     "serve": "npm run build && nodemon src/index.js",
     "start": "node src/index.js",
     "deploy": "npm run build"
@@ -33,6 +34,7 @@
     "@apollo/gateway": "^0.10.0",
     "apollo-datasource-rest": "^0.6.1",
     "apollo-server": "^2.8.2",
+    "axios": "^0.19.0",
     "concurrently": "^4.1.2",
     "couchbase": "^2.5.1",
     "graphql": "^14.5.0",
