@@ -65,7 +65,7 @@ class ResidentAPI {
     let query = couchbase.N1qlQuery.fromString(statement);
 
     let promise = new Promise((resolve,reject) => {
-      this.bucket.query(query, (error, response) => {
+      bucket.query(query, (error, response) => {
         if(error){
           console.log(error);
           reject(error)

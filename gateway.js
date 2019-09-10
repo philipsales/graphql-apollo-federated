@@ -1,9 +1,11 @@
-const { ApolloServer } = require("apollo-server");
-const { ApolloGateway } = require("@apollo/gateway");
+'use strict';
 
-
+require('./src/server/config/config');
 const log = require('./src/server/lib/logger/logger');
 const logger = log.logger.child({ sourceFile: log.file.setFilename(__filename) });
+
+const { ApolloServer } = require("apollo-server");
+const { ApolloGateway } = require("@apollo/gateway");
 
 const gateway = new ApolloGateway({
   serviceList: [
@@ -13,7 +15,6 @@ const gateway = new ApolloGateway({
 });
 
 (async () => {
-
   const { schema, executor } = await gateway.load();
 
   const server = new ApolloServer({ 

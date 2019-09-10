@@ -1,6 +1,7 @@
 'use strict';
-require('../../../src/server/config/config');
 
+//TODO: FIX ../../
+require('../../../src/server/config/config');
 const log = require('../../../src/server/lib/logger/logger');
 const logger = log.logger.child({ sourceFile: log.file.setFilename(__filename) });
 
@@ -8,7 +9,6 @@ const { buildFederatedSchema } = require("@apollo/federation");
 const { ApolloServer } = require('apollo-server');
 
 const typeDefs = require('./typeDefs/combine.gql'); 
-
 const resolvers = require('./resolver');
 const MessageAPI = require('./dataSources/message');
 
@@ -23,20 +23,12 @@ const schema =  buildFederatedSchema([
   }
 ])
 
-
 const server = new ApolloServer({ 
-    //typeDefs, 
-    //resolvers,
     schema,
     dataSources,
     tracing: true,
     cacheControl: false,
     debug: true
-    /*
-    engine: {
-      apiKey: process.env.APOLLO_ENGINE_KEY,
-    },
-    */
 });
 
 if (process.env.NODE_ENV !== 'test'){
@@ -49,7 +41,5 @@ if (process.env.NODE_ENV !== 'test'){
 module.exports = { 
   dataSources,
   schema,
-  //typeDefs,
-  //resolvers,
   MessageAPI 
 }

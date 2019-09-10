@@ -2,6 +2,7 @@
 
 const file = require('../logger/util/filename');
 const logPath = process.env.LOG_PATH;
+console.log("LOGPATH", logPath);
 
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, label, prettyPrint } = format;
