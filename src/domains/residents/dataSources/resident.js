@@ -168,7 +168,7 @@ class ResidentAPI {
   }
 
   matchMetaDataFields(key){
-    let meta = ["organization", "createdBy"];
+    let meta = ["organization", "createdBy", "type", "dateCreated"];
     return meta.find(x => x === key)
   }
 
@@ -222,49 +222,25 @@ class ResidentAPI {
 
       }); 
 
-      let result = await promise; 
-      return result;
+      return await promise; 
   }
 
   async postResidents(args) {
-    console.log('POST RESIDENTS', args)
-    var url = "http://139.162.49.49:4984/awhpiidb/_bulk_docs"
+    let bulkDocs = {};
+    let documents = [];
 
-    /*
-    let meta =  args.input._residentMeta
-    let answers =  args.input.resident
-    let data = {...meta, answers }
-    */
-    //let docs =  { "docs":  args.input  }
-    let docs = {
-      "docs": [{
-          "createdBy": "jeprox@gmail.com",
-          "organization": "Zamboanga RHU",
-          "type": "profile",
-          "dateCreated": "2019-09-10T00:03:02.947647942Z",
-          "answers": {
-            "First_Name": "Philip adsfasdfas",
-            "Last_Name": "JOhn",
-            "countryCode": "KHM"
-          }
-        },
-        {
-          "createdBy": "jeprox@gmail.com",
-          "organization": "Zamboanga RHU",
-          "type": "profile",
-          "dateCreated": "2019-09-10T00:03:02.947647942Z",
-          "resident": {
-            "First_Name": "Philip adsfasdfas",
-            "Last_Name": "JOhn",
-            "countryCode": "KHM"
-          }
-        }
-      ]
-    }
-    console.log(docs);
+    const url = "http://139.162.49.49:4984/awhpiidb/_bulk_docs"
+
+    args.input.forEach(item => {
+      let meta =  item._residentMeta
+      let answers =  item.resident
+      let document = {...meta, answers }
+      documents.push(document)
+    });
+    bulkDocs = { "docs" : documents };
     
     let promise = new Promise((resolve,reject) => {
-      axios.post(url, docs)
+      axios.post(url, bulkDocs)
         .then((response) => {
 
           console.log(response.data);
@@ -277,8 +253,7 @@ class ResidentAPI {
 
       }); 
 
-      let results = await promise; 
-      return results;
+      return await promise; 
   }
 
 
@@ -306,8 +281,7 @@ class ResidentAPI {
 
       }); 
 
-      let result = await promise; 
-      return result;
+      return await promise; 
   }
 
   async getLatestRevision(id) {
