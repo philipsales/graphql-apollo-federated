@@ -25,42 +25,56 @@ class ResidentAPI {
 
   }
 
-  residentReducer(answer) {
+  residentReducer(resident) {
     console.log('inside reducer');
-    return {
-      address_1: answer.Address_1,
-      address_2: answer.Address_2,
-      consentGiven: answer.Consent_Given,
-      DoB: answer.DoB,
-      First_Name: answer.First_Name,
-      Gender: answer.Gender,
-      Last_Name: answer.Last_Name,
-      Middle_Name: answer.Middle_Name,
-      additionalIdentificationType: answer.additionalIdentificationType,
-      additionalIdentificationValue: answer.additionalIdentificationValue,
-      cellphoneNumber: answer.cellphoneNumber,
-      countryCode: answer.countryCode,
-      countryName: answer.countryName,
-      emailAddress: answer.emailAddress,
-      lastNameSuffix: answer.lastNameSuffix,
-      poorCardHas: answer.poorCardHas,
-      poorCardNumber: answer.poorCardNumber, 
-      poorCardReason: answer.poorCardReason,
-      postalCode: answer.postalCode, 
-      provinceCity: answer.provinceCity, 
+    console.log('answer',resident.answers.Last_Name)
+    let answers = { 
 
-      _id: answer._id,
-      createdBy: answer.createdBy,
-      organization: answer.organization,
-      dateCreated: answer.dateCreated
+      adddress: {
+        countryCode: resident.answers.countryCode,
+        countryName: resident.answers.countryName,
+        Address_1: resident.answers.Address_1,
+        Address_2: resident.answers.Address_2,
+        postalCode: resident.answers.postalCode, 
+        provinceCity: resident.answers.provinceCity 
+      },
+      personalInformation: {
+        consentGiven: resident.answers.Consent_Given,
+        DoB: resident.answers.DoB,
+        First_Name: resident.answers.First_Name,
+        Gender: resident.answers.Gender,
+        Last_Name: resident.answers.Last_Name,
+        Middle_Name: resident.answers.Middle_Name,
+        lastNameSuffix: resident.answers.lastNameSuffix
+      },
+      contactDetail: {
+        emailAddress: resident.answers.emailAddress,
+        cellphoneNumber: resident.answers.cellphoneNumber
+      },
+      identificationCard: {
+        additionalIdentificationType: resident.answers.additionalIdentificationType,
+        additionalIdentificationValue: resident.answers.additionalIdentificationValue,
+        poorCardHas: resident.answers.poorCardHas,
+        poorCardNumber: resident.answers.poorCardNumber, 
+        poorCardReason: resident.answers.poorCardReason,
+      },
+      _residentMeta: {
+        _id: resident._id,
+        createdBy: resident.createdBy,
+        organization: resident.organization,
+        dateCreated: resident.dateCreated
+      }
+
     }
+
+    return answers;
   }
 
   async getResident(residentID) {
     console.log('RESIDENT ID', residentID);
     console.log('process ENV',process.env.COUCHBASE[0].COUCHBASE_BUCKET);
 
-    let statement = "SELECT awhpiidb.answers.*,  awhpiidb.createdBy as createdBy FROM awhpiidb limit 1";
+    let statement = `SELECT awhpiidb.* FROM awhpiidb WHERE meta().id="${residentID}" LIMIT 1`;
     console.log(statement);
     let query = couchbase.N1qlQuery.fromString(statement);
 
@@ -77,9 +91,7 @@ class ResidentAPI {
     }); 
 
     let result = await promise; 
-    
-    return Array.isArray(result)
-      ? result.map(resident => this.residentReducer(resident)) : [];
+    return result.map(resident => this.residentReducer(resident))[0];
   }
 
 
@@ -102,10 +114,11 @@ class ResidentAPI {
       })
     }); 
 
-    let result = await promise; 
+    let results = await promise; 
+    console.log(Array.isArray(result));
 
     return Array.isArray(result)
-      ? result.map(resident => this.residentReducer(resident)) : [];
+      ? results.map(resident => this.residentReducer(resident)) : [];
   }
 
   setQuery(args){
@@ -114,7 +127,7 @@ class ResidentAPI {
     let offsetClause = this.parseOffset(args.offset)
     let limitClause = this.parseLimit(args.limit)
 
-    let statement = `SELECT meta().id as _id, createdBy as createdBy, organization as organization, dateCreated as dateCreated, answers.* FROM awhpiidb`;
+    let statement = `SELECT awhpiidb.* FROM awhpiidb`;
 
     if (whereClause)
         statement += whereClause
@@ -189,7 +202,10 @@ class ResidentAPI {
 
   async postResident(args) {
     var url = "http://139.162.49.49:4984/awhpiidb/"
-    let data = args.input;
+
+    let meta =  args.input._residentMeta
+    let answers =  args.input.answers
+    let data = {...meta, answers}
     
     let promise = new Promise((resolve,reject) => {
       axios.post(url, data)

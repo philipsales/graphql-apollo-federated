@@ -18,12 +18,12 @@ const GQLtypes = gql`
     }
 
   type Mutation {
-    createResident(input: CreateResidentInput!): mutatePersonResponse!
+    createResident(input: CreateResidentInput!): MutateResponse!
     updateResident(id: ID!
-      input: UpdateResidentInput!): mutatePersonResponse!
+      input: UpdateResidentInput!): MutateResponse!
   }
 
-  type mutatePersonResponse {
+  type MutateResponse {
     id: ID
     ok: String
   }
@@ -39,45 +39,54 @@ const GQLtypes = gql`
     dateRange: DateRange
   }
 
-  input DateRange {
-    dateName: DateName
-    dateFrom: Date
-    dateTo: Date
-  }
-
-  interface Node {
-    _id: ID!
-    dateCreated: Date 
-  }
-
-
   type Resident {
-    address_1: String
-    address_2: String
+    personalInformation: PersonalInformation 
+    address: Address
+    contactDetail: ContactDetail
+    identificationCard: IdentificationCard
+    _residentMeta: _ResidentMeta
+  }
+
+  type PersonalInformation {
     consentGiven: String
     DoB: Date 
     First_Name: String
     Gender: String
     Last_Name: String
     Middle_Name: String
-    additionalIdentificationType: String
-    additionalIdentificationValue: String
+    lastNameSuffix: String
+  }
+
+  type ContactDetail {
     cellphoneNumber: String
+    emailAddress: String
+  }
+
+  type Address {
     countryCode: String
     countryName: String
-    emailAddress: String
-    lastNameSuffix: String
+    Address_1: String
+    Address_2: String
+    postalCode: String
+    provinceCity: String
+  }
+
+  type IdentificationCard {
+    additionalIdentificationType: String
+    additionalIdentificationValue: String
     poorCardHas: String
     poorCardNumber: String
     poorCardReason: String
-    postalCode: String
-    provinceCity: String
-    createdBy: String
-    organization: String
-    dateCreated: Date 
   }
 
-  input _ResidentMeta {
+  type _ResidentMeta { 
+    createdBy: String
+    organization: String
+    type: String
+    dateCreated: Date
+  }
+
+  input _ResidentMetaInput {
     createdBy: String!
     organization: String!
     type: String!
@@ -85,18 +94,18 @@ const GQLtypes = gql`
   }
 
   input CreateResidentInput {
-    _residentMeta: _ResidentMeta!
-    answers: Answer!
+    _residentMeta: _ResidentMetaInput!
+    resident: ResidentInput!
   }
 
   input UpdateResidentInput {
-    _residentMeta: _ResidentMeta!
-    answers: Answer!
+    _residentMeta: _ResidentMetaInput!
+    resident: ResidentInput!
   }
 
-  input Answer {
-    address_1: String
-    address_2: String
+  input ResidentInput {
+    Address_1: String
+    Address_2: String
     consentGiven: String
     DoB: Date 
     First_Name: String
@@ -115,6 +124,12 @@ const GQLtypes = gql`
     poorCardReason: String
     postalCode: String
     provinceCity: String
+  }
+
+  input DateRange {
+    dateName: DateName
+    dateFrom: Date
+    dateTo: Date
   }
 
   enum DateName {
@@ -138,6 +153,7 @@ const GQLtypes = gql`
     address_1_ASC
     address_1_DESC
   }
+
 
 `;
 
