@@ -7,24 +7,21 @@ const logger = log.logger.child({ sourceFile: log.file.setFilename(__filename) }
 const { buildFederatedSchema } = require("@apollo/federation");
 const { ApolloServer } = require('apollo-server');
 
-const typeDefs = require('./typeDefs/query.gql'); 
+const typeDefs = require('./typeDefs/combine.gql'); 
 
 const resolvers = require('./resolver');
-
 const MessageAPI = require('./dataSources/message');
-
 
 const dataSources = () => ({
   messageAPI: new MessageAPI()
 });
 
-
 const schema =  buildFederatedSchema([
-    {
-      typeDefs,
-      resolvers
-    }
-  ])
+  {
+    typeDefs,
+    resolvers
+  }
+])
 
 
 const server = new ApolloServer({ 
