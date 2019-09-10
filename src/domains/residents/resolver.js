@@ -9,10 +9,12 @@ const resolvers = {
       dataSources.residentAPI.getResidents(args)
   },
   Mutation: {
-    createResident: (_,  args , { dataSources }) => 
+    postResident: (_,  args , { dataSources }) => 
       dataSources.residentAPI.postResident(args),
-    updateResident: (_, args, { dataSources }) => 
-      dataSources.residentAPI.updateResident(args)
+    postResidents: (_,  args , { dataSources }) => 
+      dataSources.residentAPI.postResidents(args),
+    putResident: (_, args, { dataSources }) => 
+      dataSources.residentAPI.putResident(args)
   }
 }
 

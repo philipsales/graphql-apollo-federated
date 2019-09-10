@@ -115,9 +115,8 @@ class ResidentAPI {
     }); 
 
     let results = await promise; 
-    console.log(Array.isArray(result));
 
-    return Array.isArray(result)
+    return Array.isArray(results)
       ? results.map(resident => this.residentReducer(resident)) : [];
   }
 
@@ -204,18 +203,72 @@ class ResidentAPI {
     var url = "http://139.162.49.49:4984/awhpiidb/"
 
     let meta =  args.input._residentMeta
-    let answers =  args.input.answers
+    let answers =  args.input.resident
     let data = {...meta, answers}
     
     let promise = new Promise((resolve,reject) => {
       axios.post(url, data)
         .then((response) => {
           let result = { 
-            "id": response.data.id,
-            "ok": response.data.ok
+            "id": response.data.id
           };
           console.log(result);
           resolve(result);
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error);
+        }); 
+
+      }); 
+
+      let result = await promise; 
+      return result;
+  }
+
+  async postResidents(args) {
+    console.log('POST RESIDENTS', args)
+    var url = "http://139.162.49.49:4984/awhpiidb/_bulk_docs"
+
+    /*
+    let meta =  args.input._residentMeta
+    let answers =  args.input.resident
+    let data = {...meta, answers }
+    */
+    //let docs =  { "docs":  args.input  }
+    let docs = {
+      "docs": [{
+          "createdBy": "jeprox@gmail.com",
+          "organization": "Zamboanga RHU",
+          "type": "profile",
+          "dateCreated": "2019-09-10T00:03:02.947647942Z",
+          "answers": {
+            "First_Name": "Philip adsfasdfas",
+            "Last_Name": "JOhn",
+            "countryCode": "KHM"
+          }
+        },
+        {
+          "createdBy": "jeprox@gmail.com",
+          "organization": "Zamboanga RHU",
+          "type": "profile",
+          "dateCreated": "2019-09-10T00:03:02.947647942Z",
+          "resident": {
+            "First_Name": "Philip adsfasdfas",
+            "Last_Name": "JOhn",
+            "countryCode": "KHM"
+          }
+        }
+      ]
+    }
+    console.log(docs);
+    
+    let promise = new Promise((resolve,reject) => {
+      axios.post(url, docs)
+        .then((response) => {
+
+          console.log(response.data);
+          resolve(response.data);
         })
         .catch((error) => {
           console.log(error);
@@ -224,24 +277,24 @@ class ResidentAPI {
 
       }); 
 
-      let result = await promise; 
-      return result;
+      let results = await promise; 
+      return results;
   }
 
-  async updateResident(args) {
+
+  async putResident(args) {
     let revision = await this.getLatestRevision(args.id);
     let url = `http://139.162.49.49:4984/awhpiidb/${args.id}?new_edits=true&rev=${revision}`
 
     let meta =  args.input._residentMeta
-    let answers =  args.input.answers
+    let answers =  args.input.resident
     let data = {...meta, answers}
 
     let promise = new Promise((resolve,reject) => {
       axios.put(url, data)
         .then((response) => {
           let result = { 
-            "id": response.data.id,
-            "ok": response.data.ok
+            "id": response.data.id
           };
           console.log(result);
           resolve(result);

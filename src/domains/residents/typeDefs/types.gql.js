@@ -18,14 +18,14 @@ const GQLtypes = gql`
     }
 
   type Mutation {
-    createResident(input: CreateResidentInput!): MutateResponse!
-    updateResident(id: ID!
+    postResident(input: CreateResidentInput!): MutateResponse!
+    postResidents(input: [CreateResidentInput]): [MutateResponse!]!
+    putResident(id: ID!
       input: UpdateResidentInput!): MutateResponse!
   }
 
   type MutateResponse {
     id: ID
-    ok: String
   }
 
   input PersonFilter {
